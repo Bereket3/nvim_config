@@ -75,3 +75,20 @@ require("nvim-treesitter.configs").setup {
         enable_autocmd = false,
     },
 }
+
+require('telescope').setup {
+  defaults = {
+    vimgrep_arguments = {
+      "rg",
+      "--color=never",
+      "--no-heading",
+      "--with-filename",
+      "--line-number",
+      "--column",
+      "--smart-case",
+      "--hidden",
+      "--glob=!node_modules/*",
+      "--glob=!venv/*"
+    }
+  }
+}
