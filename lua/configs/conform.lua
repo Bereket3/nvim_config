@@ -9,6 +9,7 @@ local options = {
     javascript = { 'prettierd', 'prettier', stop_after_first = true },
     php = { { 'pint', 'php_cs_fixer' } },
     c = { 'clang-format' },
+    cpp = { 'clang-format' },
   },
 
   format_on_save = {
