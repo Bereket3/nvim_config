@@ -53,7 +53,9 @@ return {
       },
     },
   },
-
+  {
+    'windwp/nvim-ts-autotag',
+  },
   {
     'mrcjkb/rustaceanvim',
     version = '^5', -- Recommended
