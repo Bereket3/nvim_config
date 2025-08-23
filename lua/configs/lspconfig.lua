@@ -2,15 +2,14 @@
 require('nvchad.configs.lspconfig').defaults()
 
 local lspconfig = require 'lspconfig'
-local utils = require 'lspconfig/util'
--- EXAMPLE
+local utils = require 'lspconfig.util'
+
 local servers = {
   'html',
   'cssls',
   'pylsp',
-  -- "pyright",
   'ruff',
-  'ts_ls',
+  'ts_ls', -- fixed name
   'gopls',
   'rust_analyzer',
   'tailwindcss',
@@ -28,30 +27,22 @@ for _, lsp in ipairs(servers) do
   }
 end
 
--- configuring single server, example: typescript
--- lspconfig.ts_ls.setup {
---   on_attach = nvlsp.on_attach,
---   on_init = nvlsp.on_init,
---   capabilities = nvlsp.capabilities,
--- }
-
-require('lspconfig').pyright.setup {
+-- pyright (custom config)
+lspconfig.pyright.setup {
   settings = {
     pyright = {
-      -- Using Ruff's import organizer
       disableOrganizeImports = true,
     },
     python = {
       analysis = {
-        -- Ignore all files for analysis to exclusively use Ruff for linting
         ignore = { '*' },
       },
     },
   },
 }
 
+-- gopls (custom config)
 lspconfig.gopls.setup {
-
   cmd = { 'gopls' },
   filetypes = { 'go', 'gomod', 'gowork', 'gotmpl' },
   root_dir = utils.root_pattern('go.work', 'go.mod', '.git'),
