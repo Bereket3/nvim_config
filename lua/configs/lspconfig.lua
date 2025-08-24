@@ -15,6 +15,7 @@ local servers = {
   'tailwindcss',
   'phpactor',
   'clangd',
+  -- 'jdtls ',
 }
 local nvlsp = require 'nvchad.configs.lspconfig'
 

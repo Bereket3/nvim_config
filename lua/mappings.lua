@@ -27,5 +27,5 @@ map('n', '<Leader>dr', "<cmd>lua require'dap'.run_last()<CR>", { desc = 'Debugge
 map('n', '<Leader>dt', "<cmd>lua vim.cmd('RustLsp testables')<CR>", { desc = 'Debugger testables' })
 map({ 'n', 'i', 'v' }, '<Leader>sl', '<esc>ggVG', { desc = 'Selecte All Text' })
 map({ 'n' }, '<Leader>ms', ':Mason<Enter>', { desc = 'Mason' })
-
+map({ 'n' }, '<leader>show', '<cmd>lua vim.lsp.buf.hover()<CR>', { desc = 'Toggle hover action' })
 -- map({ "n", "i", "v" }, "<C-s>", "<cmd> w <cr>")

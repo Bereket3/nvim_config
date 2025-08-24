@@ -6,20 +6,91 @@ return {
   },
   {
     'tpope/vim-fugitive', -- Add this line for vim-fugitive
-    event = 'VeryLazy',   -- Optionally load this lazily, e.g., when Vim is idle
+    event = 'VeryLazy', -- Optionally load this lazily, e.g., when Vim is idle
   },
   {
-    "kevinhwang91/nvim-ufo",
-    dependencies = { "kevinhwang91/promise-async" },
+    'kevinhwang91/nvim-ufo',
+    dependencies = { 'kevinhwang91/promise-async' },
     config = function()
-      vim.o.foldcolumn = "1" -- show fold column
-      vim.o.foldlevel = 99   -- start unfolded
+      vim.o.foldcolumn = '1' -- show fold column
+      vim.o.foldlevel = 99 -- start unfolded
       vim.o.foldlevelstart = 99
       vim.o.foldenable = true
 
-      require("ufo").setup()
+      require('ufo').setup()
     end,
   },
+  {
+    'nvimdev/dashboard-nvim',
+    event = 'VimEnter',
+    opts = function()
+      local logo = [[
+                                                                             
+               ████ ██████           █████      ██                     
+              ███████████             █████                             
+              █████████ ███████████████████ ███   ███████████   
+             █████████  ███    █████████████ █████ ██████████████   
+            █████████ ██████████ █████████ █████ █████ ████ █████ 
+          ███████████ ███    ███ █████████ █████ █████ ████ █████  
+         ██████  █████████████████████ ████ █████ █████ ████ ██████ 
+      ]]
+
+      logo = string.rep('\n', 8) .. logo .. '\n\n'
+
+      local opts = {
+        theme = 'doom',
+        hide = {
+          -- this is taken care of by lualine
+          -- enabling this messes up the actual laststatus setting after loading a file
+          statusline = false,
+        },
+        config = {
+          header = vim.split(logo, '\n'),
+          -- stylua: ignore
+          center = {
+            { action = "Telescope find_files", desc = " Find file", icon = " ", key = "f" },
+            { action = "ene | startinsert", desc = " New file", icon = " ", key = "n" },
+            { action = "Telescope oldfiles", desc = " Recent files", icon = " ", key = "r" },
+            { action = "Telescope live_grep", desc = " Find text", icon = " ", key = "g" },
+            {
+              action = [[lua require("lazyvim.util").telescope.config_files()()]],
+              desc = " Config",
+              icon = " ",
+              key = "c"
+            },
+            { action = 'lua require("persistence").load()', desc = " Restore Session", icon = " ", key = "s" },
+            { action = "LazyExtras", desc = " Lazy Extras", icon = " ", key = "x" },
+            { action = "Lazy", desc = " Lazy", icon = "󰒲 ", key = "l" },
+            { action = "qa", desc = " Quit", icon = " ", key = "q" },
+          },
+          footer = function()
+            local stats = require('lazy').stats()
+            local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
+            return { '⚡ Neovim loaded ' .. stats.loaded .. '/' .. stats.count .. ' plugins in ' .. ms .. 'ms' }
+          end,
+        },
+      }
+
+      for _, button in ipairs(opts.config.center) do
+        button.desc = button.desc .. string.rep(' ', 43 - #button.desc)
+        button.key_format = '  %s'
+      end
+
+      -- close Lazy and re-open when the dashboard is ready
+      if vim.o.filetype == 'lazy' then
+        vim.cmd.close()
+        vim.api.nvim_create_autocmd('User', {
+          pattern = 'DashboardLoaded',
+          callback = function()
+            require('lazy').show()
+          end,
+        })
+      end
+
+      return opts
+    end,
+  },
+  { 'mfussenegger/nvim-jdtls' },
   -- add this to your lua/plugins.lua, lua/plugins/init.lua,  or the file you keep your other plugins:
   {
     'numToStr/Comment.nvim',
@@ -30,7 +101,38 @@ return {
   {
     'Djancyp/better-comments.nvim',
     config = function()
-      require('better-comment').setup()
+      require('better-comment').setup({
+        tags = {
+          {
+            name = 'TODO',
+            fg = 'white',
+            bg = '#0a7aca',
+            bold = true,
+            virtual_text = '',
+          },
+          {
+            name = 'FIX',
+            fg = 'white',
+            bg = '#f44747',
+            bold = true,
+            virtual_text = 'This is virtual Text from FIX',
+          },
+          {
+            name = 'WARNING',
+            fg = '#FFA500',
+            bg = '',
+            bold = false,
+            virtual_text = 'This is virtual Text from WARNING',
+          },
+          {
+            name = '!',
+            fg = '#f44747',
+            bg = '',
+            bold = true,
+            virtual_text = '',
+          },
+        },
+      })
     end,
   },
   {
@@ -67,7 +169,7 @@ return {
           enable = true,
           keys = {
             quit = '<Esc>', -- Mapping to exit the rename prompt
-            exec = '<CR>',  -- Enter key to apply the rename
+            exec = '<CR>', -- Enter key to apply the rename
           },
         },
         diagnostic = {
@@ -93,11 +195,11 @@ return {
     version = '*',
     config = true,
     opts = {
-      default_mappings = true,     -- disable buffer local mapping created by this plugin
-      default_commands = true,     -- disable commands created by this plugin
+      default_mappings = true, -- disable buffer local mapping created by this plugin
+      default_commands = true, -- disable commands created by this plugin
       disable_diagnostics = false, -- This will disable the diagnostics in a buffer whilst it is conflicted
-      list_opener = 'copen',       -- command or function to open the conflicts list
-      highlights = {               -- They must have background color, otherwise the default color will be used
+      list_opener = 'copen', -- command or function to open the conflicts list
+      highlights = { -- They must have background color, otherwise the default color will be used
         incoming = 'DiffAdd',
         current = 'DiffText',
       },
@@ -166,22 +268,22 @@ return {
   {
     'mrcjkb/rustaceanvim',
     version = '^6', -- Recommended
-    lazy = false,   -- This plugin is already lazy
+    lazy = false, -- This plugin is already lazy
     config = function()
       vim.g.rustaceanvim = function()
         -- Update this path
         local extension_path = vim.env.HOME .. '/.vscode/extensions/vadimcn.vscode-lldb-1.10.0/'
         local codelldb_path = extension_path .. 'adapter/codelldb'
         local liblldb_path = extension_path .. 'lldb/lib/liblldb'
-        local this_os = vim.uv.os_uname().sysname;
+        local this_os = vim.uv.os_uname().sysname
 
         -- The path is different on Windows
-        if this_os:find "Windows" then
-          codelldb_path = extension_path .. "adapter\\codelldb.exe"
-          liblldb_path = extension_path .. "lldb\\bin\\liblldb.dll"
+        if this_os:find 'Windows' then
+          codelldb_path = extension_path .. 'adapter\\codelldb.exe'
+          liblldb_path = extension_path .. 'lldb\\bin\\liblldb.dll'
         else
           -- The liblldb extension is .so for Linux and .dylib for MacOS
-          liblldb_path = liblldb_path .. (this_os == "Linux" and ".so" or ".dylib")
+          liblldb_path = liblldb_path .. (this_os == 'Linux' and '.so' or '.dylib')
         end
 
         local cfg = require('rustaceanvim.config')
@@ -191,7 +293,7 @@ return {
           },
         }
       end
-    end
+    end,
   },
 
   {
@@ -270,25 +372,25 @@ return {
     'williamboman/mason.nvim',
     opts = {
       ensure_installed = {
-        "eslint-lsp",
-        "prettierd",
-        "tailwindcss-language-server",
-        "typescript-language-server",
-        "gopls",
-        "gofmt",
-        "pyright",
-        "mypy",
-        "ruff",
-        "black",
-        "astro-language-server",
-        "intelephense",
-        "emmet_language_server",
-        "gofumpt",
-        "golines",
-        "black",
-        "mypy",
-        "taplo",
-        "htmlbeautifier",
+        'eslint-lsp',
+        'prettierd',
+        'tailwindcss-language-server',
+        'typescript-language-server',
+        'gopls',
+        'gofmt',
+        'pyright',
+        'mypy',
+        'ruff',
+        'black',
+        'astro-language-server',
+        'intelephense',
+        'emmet_language_server',
+        'gofumpt',
+        'golines',
+        'black',
+        'mypy',
+        'taplo',
+        'htmlbeautifier',
         'gopls',
         'pyright',
         'clangd',
@@ -303,10 +405,10 @@ return {
       vim.g.mkdp_filetypes = { 'markdown' }
     end,
     config = function()
-      vim.g.mkdp_auto_start = 1     -- Automatically start preview on file open
-      vim.g.mkdp_auto_close = 1     -- Automatically close preview on leaving buffer
-      vim.g.mkdp_refresh_slow = 1   -- Refresh preview slower for large files
-      vim.g.mkdp_port = '8080'      -- Set a fixed port for the preview
+      vim.g.mkdp_auto_start = 1 -- Automatically start preview on file open
+      vim.g.mkdp_auto_close = 1 -- Automatically close preview on leaving buffer
+      vim.g.mkdp_refresh_slow = 1 -- Refresh preview slower for large files
+      vim.g.mkdp_port = '8080' -- Set a fixed port for the preview
       vim.g.mkdp_browser = 'chrome' -- Set the browser to Chrome
 
       -- Function to open a new Chrome window
